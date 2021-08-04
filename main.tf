@@ -33,7 +33,7 @@ resource "random_string" "unique" {
 }
 
 resource "azurerm_storage_account" "storeacc" {
-  name                      = substr(format("sta%s%s", lower(replace(var.storage_account_name, "/[[:^alnum:]]/", "")), random_string.unique.result), 0, 24)
+  name                      = lower(replace(var.storage_account_name, "/[[:^alnum:]]/", ""))
   resource_group_name       = local.resource_group_name
   location                  = local.location
   account_kind              = var.account_kind
@@ -42,7 +42,7 @@ resource "azurerm_storage_account" "storeacc" {
   enable_https_traffic_only = true
   min_tls_version           = var.min_tls_version
   allow_blob_public_access  = var.enable_advanced_threat_protection == true ? true : false
-  tags                      = merge({ "ResourceName" = substr(format("sta%s%s", lower(replace(var.storage_account_name, "/[[:^alnum:]]/", "")), random_string.unique.result), 0, 24) }, var.tags, )
+  tags                      = var.tags
 
   identity {
     type         = var.identity_ids != null ? "SystemAssigned, UserAssigned" : "SystemAssigned"
